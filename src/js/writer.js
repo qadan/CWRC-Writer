@@ -571,7 +571,10 @@ return function(config) {
     w.init = function(textareaId) {
 
         w.eventManager = new EventManager(w);
-        w.schemaManager = new SchemaManager(w, {schemas: config.schemas});
+        w.schemaManager = new SchemaManager(w, {
+          schemas: config.schemas,
+          schemaId: config.schemaId
+        });
         w.entitiesManager = new EntitiesManager(w);
         w.utilities = new Utilities(w);
         w.tagger = new Tagger(w);

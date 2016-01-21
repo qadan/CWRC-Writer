@@ -534,59 +534,59 @@ return function(writer) {
      * @param doc An XML DOM
      */
     converter.processDocument = function(doc) {
-        var schemaId;
+        var schemaId = w.schemaManager.schemaId;
 //        var cssFilename;
         var cssUrl;
         var loadSchemaCss = true; // whether to load schema css
 
-        // TODO need a better way of tying this to the schemas config
-
-        // grab the schema (and css) from xml-model
-        for (var i = 0; i < doc.childNodes.length; i++) {
-            var node = doc.childNodes[i];
-            if (node.nodeName === 'xml-model') {
-                var xmlModelData = node.data;
-                var schemaUrl = xmlModelData.match(/href="([^"]*)"/)[1];
-                // Search the known schemas, if the url matches it must be the same one.
-                $.each(w.schemaManager.schemas, function(id, schema) {
-                    var aliases = schema.aliases || [];
-                    if (schemaUrl == schema.url || $.inArray(schemaUrl, aliases) !== -1) {
-                        schemaId = id;
-//                        cssFilename = null;
-                        return false;
+        if (schemaId === null || typeof schemaId === 'undefined') {
+            // grab the schema (and css) from xml-model
+            for (var i = 0; i < doc.childNodes.length; i++) {
+                var node = doc.childNodes[i];
+                if (node.nodeName === 'xml-model') {
+                    var xmlModelData = node.data;
+                    var schemaUrl = xmlModelData.match(/href="([^"]*)"/)[1];
+                    // Search the known schemas, if the url matches it must be the same one.
+                    $.each(w.schemaManager.schemas, function(id, schema) {
+                        var aliases = schema.aliases || [];
+                        if (schemaUrl == schema.url || $.inArray(schemaUrl, aliases) !== -1) {
+                            schemaId = id;
+//                            cssFilename = null;
+                            return false;
+                        }
+                    });
+                    // Only continue guessing if we didn't already have an exact match.
+                    if (schemaId !== undefined) {
+                        break;
                     }
-                });
-                // Only continue guessing if we didn't already have an exact match.
-                if (schemaId !== undefined) {
-                    break;
-                }
-                var urlParts = schemaUrl.match(/^(.*):\/\/([a-z\-.]+)(?=:[0-9]+)?\/(.*)/);
-                var fileName = urlParts[3];
-                if (fileName.indexOf('events') != -1) {
-                    schemaId = 'events';
-                } else if (fileName.toLowerCase().indexOf('biography') != -1) {
-                    schemaId = 'biography';
-                } else if (fileName.toLowerCase().indexOf('writing') != -1) {
-                    schemaId = 'writing';
-                } else if (fileName.toLowerCase().indexOf('tei') != -1) {
-                    schemaId = 'tei';
-                } else if (fileName.toLowerCase().indexOf('entry') != -1) {
-                    schemaId = 'cwrcEntry';
-                } else {
-                    schemaId = 'customSchema';
-                    w.schemaManager.schemas.customSchema = {
-                        name: 'Custom Schema',
-                        url: schemaUrl
-                    };
-                }
-            } else if (node.nodeName === 'xml-stylesheet') {
-                var xmlStylesheetData = node.data;
-                cssUrl = xmlStylesheetData.match(/href="([^"]*)"/)[1];
-//                cssFilename = cssUrl.match(/(\w+)(.css)$/);
-//                if (cssFilename != null) {
-//                    cssFilename = 'css/'+cssFilename[1]+'_converted.css';
-//                }
+                    var urlParts = schemaUrl.match(/^(.*):\/\/([a-z\-.]+)(?=:[0-9]+)?\/(.*)/);
+                    var fileName = urlParts[3];
+                    if (fileName.indexOf('events') != -1) {
+                        schemaId = 'events';
+                    } else if (fileName.toLowerCase().indexOf('biography') != -1) {
+                        schemaId = 'biography';
+                    } else if (fileName.toLowerCase().indexOf('writing') != -1) {
+                        schemaId = 'writing';
+                    } else if (fileName.toLowerCase().indexOf('tei') != -1) {
+                        schemaId = 'tei';
+                    } else if (fileName.toLowerCase().indexOf('entry') != -1) {
+                        schemaId = 'cwrcEntry';
+                    } else {
+                        schemaId = 'customSchema';
+                        w.schemaManager.schemas.customSchema = {
+                            name: 'Custom Schema',
+                            url: schemaUrl
+                        };
+                    }
+                } else if (node.nodeName === 'xml-stylesheet') {
+                    var xmlStylesheetData = node.data;
+                    cssUrl = xmlStylesheetData.match(/href="([^"]*)"/)[1];
+//                    cssFilename = cssUrl.match(/(\w+)(.css)$/);
+//                    if (cssFilename != null) {
+//                        cssFilename = 'css/'+cssFilename[1]+'_converted.css';
+//                    }
 
+                }
             }
         }
 
@@ -619,13 +619,9 @@ return function(writer) {
                 type: 'error'
             });
         } else {
-            if (schemaId !== w.schemaManager.schemaId) {
-                w.schemaManager.loadSchema(schemaId, false, loadSchemaCss, function() {
-                    doProcessing(doc);
-                });
-            } else {
+            w.schemaManager.loadSchema(schemaId, false, loadSchemaCss, function() {
                 doProcessing(doc);
-            }
+            });
         }
     };
 

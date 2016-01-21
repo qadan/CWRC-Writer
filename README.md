@@ -122,6 +122,7 @@ The bulk of the work in setting up the CWRCWriter is in the delegator.  The foll
   * `url`: An url that links to the actual schema (RELAX NG) file.
   * `cssUrl`: An url that links to the CSS associated with this schema.
   * `schemaMappingsId`: The directory name associated with this schema. This is used to load appropriate mapping and dialogs files from the schema directory: https://github.com/cwrc/CWRC-Writer/tree/development/src/js/schema
+* `config.schemaId`: String. An optional schemaId to specify which schema from `config.schemas` should be set. If it doesn't exist or isn't set, the schemaManager will make an effort to guess the schema currently in use.
 * `config.cwrcDialogs`: Object. Contains various urls for use by the [CWRC-Dialogs](https://github.com/cwrc/CWRC-Dialogs). See [writerConfig.js](https://github.com/cwrc/CWRC-Writer/blob/development/src/js/writerConfig.js) for an example.
 * `config.buttons1`, `config.buttons2`, `config.buttons3`: String. A comma separated list of plugins that will be set in the toolbars in the CWRC-Writer. Some possible values are: `addperson, addplace, adddate, addorg, addcitation, addnote, addtitle, addcorrection, addkeyword, addlink, editTag, removeTag, addtriple, viewsource, editsource, validate, savebutton, loadbutton`.
 
