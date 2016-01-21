@@ -589,6 +589,12 @@ return function(writer) {
                 }
             }
         }
+        else {
+          w.schemaManager.loadSchema(schemaId, false, loadSchemaCss, function() {
+            doProcessing(doc);
+          });
+          return;
+        }
 
         if (cssUrl !== undefined) {
             loadSchemaCss = false;
@@ -619,9 +625,13 @@ return function(writer) {
                 type: 'error'
             });
         } else {
-            w.schemaManager.loadSchema(schemaId, false, loadSchemaCss, function() {
+            if (schemaId !== w.schemaManager.schemaId) {
+                w.schemaManager.loadSchema(schemaId, false, loadSchemaCss, function() {
+                    doProcessing(doc);
+                });
+            } else {
                 doProcessing(doc);
-            });
+            }
         }
     };
 
