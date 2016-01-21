@@ -29,7 +29,7 @@ return function(writer, config) {
      * The ID of the current validation schema, according to config.schemas
      * @member {String}
      */ 
-    if (typeof config.schemaId === 'undefined') {
+    if (typeof config.schemaId === 'undefined' && typeof sm.schemas[config.schemaId] === 'undefined') {
         sm.schemaId = null;
     }
     else {
